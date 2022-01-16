@@ -18,10 +18,11 @@ package runner
 
 import (
 	"fmt"
+	"time"
+
 	kubekeyapiv1alpha1 "github.com/kubesphere/kubekey/apis/kubekey/v1alpha1"
 	"github.com/kubesphere/kubekey/pkg/util/ssh"
 	"github.com/pkg/errors"
-	"time"
 )
 
 type Runner struct {
@@ -39,6 +40,7 @@ func (r *Runner) ExecuteCmd(cmd string, retries int, printOutput bool, args ...s
 	var lastErr error
 	var lastOutput string
 
+	fmt.Printf("%s\n", cmd)
 	for _, i := range args {
 		if i == "printCmd" {
 			fmt.Printf("[%s %s] MSG:\n", r.Host.Name, r.Host.Address)

@@ -19,12 +19,13 @@ package kubernetes
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/kubesphere/kubekey/pkg/kubernetes/config/v1beta2"
 	"io/ioutil"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/kubesphere/kubekey/pkg/kubernetes/config/v1beta2"
 
 	kubekeyapiv1alpha1 "github.com/kubesphere/kubekey/apis/kubekey/v1alpha1"
 	"github.com/kubesphere/kubekey/pkg/plugins/dns"
@@ -106,7 +107,7 @@ func InitKubernetesCluster(mgr *manager.Manager, node *kubekeyapiv1alpha1.HostCf
 		}
 
 		for i := 0; i < 3; i++ {
-			_, err2 := mgr.Runner.ExecuteCmd("sudo env PATH=$PATH /bin/sh -c \"/usr/local/bin/kubeadm init --config=/etc/kubernetes/kubeadm-config.yaml --ignore-preflight-errors=FileExisting-crictl\"", 0, true)
+			_, err2 := mgr.Runner.ExecuteCmd("sudo env PATH=$PATH /bin/sh -c \"/usr/local/bin/kubeadm init --config=/etc/kubernetes/kubeadm-config.yaml --skip-phases upload-config/kubelet,mark-control-plane --ignore-preflight-errors=FileExisting-crictl\"", 0, true)
 			if err2 != nil {
 				if i == 2 {
 					return errors.Wrap(errors.WithStack(err2), "Failed to init kubernetes cluster")
@@ -230,7 +231,7 @@ func getJoinCmd(mgr *manager.Manager) error {
 			if len(strings.Fields(tmp[i])) > 3 {
 				allNodesInfo[strings.Fields(tmp[i])[0]] = strings.Fields(tmp[i])[1]
 			} else {
-				allNodesInfo[strings.Fields(tmp[i])[0]] = ""
+				//allNodesInfo[strings.Fields(tmp[i])[0]] = ""
 			}
 		}
 	}

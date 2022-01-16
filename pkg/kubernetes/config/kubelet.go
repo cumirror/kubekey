@@ -52,7 +52,7 @@ EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
 # This is a file that the user can use for overrides of the kubelet args as a last resort. Preferably, the user should use
 # the .NodeRegistration.KubeletExtraArgs object in the configuration files instead. KUBELET_EXTRA_ARGS should be sourced from this file.
 EnvironmentFile=-/etc/default/kubelet
-Environment="KUBELET_EXTRA_ARGS=--node-ip={{ .NodeIP }} --hostname-override={{ .Hostname }} {{ if .ContainerRuntime }}--network-plugin=cni{{ end }}"
+Environment="KUBELET_EXTRA_ARGS=--node-ip={{ .NodeIP }} --register-node={{ .Hide }} --hostname-override={{ .Hostname }} {{ if .ContainerRuntime }}--network-plugin=cni{{ end }}"
 ExecStart=
 ExecStart=/usr/local/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS
     `)))
@@ -71,5 +71,6 @@ func GenerateKubeletEnv(node *kubekeyapiv1alpha1.HostCfg) (string, error) {
 		"NodeIP":           node.InternalAddress,
 		"Hostname":         node.Name,
 		"ContainerRuntime": containerRuntime,
+		"Hide":             !node.IsMaster,
 	})
 }

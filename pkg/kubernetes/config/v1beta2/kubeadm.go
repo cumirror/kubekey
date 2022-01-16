@@ -18,11 +18,12 @@ package v1beta2
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 	"regexp"
 	"strings"
 	"text/template"
+
+	"github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 
 	kubekeyapiv1alpha1 "github.com/kubesphere/kubekey/apis/kubekey/v1alpha1"
 	"github.com/kubesphere/kubekey/pkg/kubernetes/preinstall"
@@ -82,13 +83,13 @@ scheduler:
   extraArgs:
 {{ toYaml .SchedulerArgs | indent 4 }}
 
-{{- if .CriSock }}
 ---
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
 nodeRegistration:
-  criSocket: {{ .CriSock }}
-{{- end }}
+  kubeletExtraArgs:
+    register-node: "false"
+
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
